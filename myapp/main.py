@@ -2,6 +2,7 @@ from kivy.app import App
 from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 import kivy
+import mysql
 
 
 class MyRoot(BoxLayout):
@@ -21,8 +22,24 @@ class MyRoot(BoxLayout):
 
 class Calc(App):
 
+    def __init__(self):
+        super().__init__()
+        self.db = None
+
     def build(self):
         return MyRoot()
+
+    def make_table(self):
+        self.db = mysql.create_database()
+        conn = mysql.connect()
+        mysql.create_table(conn)
+
+    @staticmethod
+    def add_entry(date, time, category, note, amount):
+        conn = mysql.connect()
+        mysql.add_entry(conn, date, time, category, note, amount)
+        conn.commit()
+        conn.close()
 
 
 calc = Calc()
